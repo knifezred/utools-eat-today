@@ -1,0 +1,11 @@
+{
+  "main": "index.html",
+  "logo": "logo.png",
+  "features": [
+    {
+      "code": "eat-today",
+      "explain": "今天吃什么",
+      "cmds": ["今天吃什么", "eat today"]
+    }
+  ]
+}
