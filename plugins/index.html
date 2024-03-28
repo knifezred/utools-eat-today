@@ -1,169 +1,198 @@
 <!DOCTYPE html>
 <html lang="zh">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>今天吃什么</title>
-  <script src="js/jquery.min.js"></script>
-  <style>
-    html {
-      font-size: 20px;
-    }
-
-    .app-eat {
-      text-align: center;
-    }
-
-    .app-eat::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      z-index: -1;
-      opacity: .2;
-      background-image: url(./imgs/bg.svg);
-      background-size: cover;
-      background-position: center;
-    }
-
-    .eat-button {
-      display: inline-block;
-      height: 1.5em;
-      width: 5em;
-      margin-top: 1em;
-      border-radius: 1em;
-      color: #fff;
-      cursor: pointer;
-      text-align: center;
-      padding: 6px;
-    }
-
-    .eat-button.start {
-      background-image: linear-gradient(135deg, #ec7e31, #f2b542);
-      box-shadow: 0 2px 6px #f2b241;
-    }
-
-    .eat-button.stop {
-      background-image: linear-gradient(90deg, #ea4b67, #ed908b);
-      box-shadow: 0 2px 6px #f08984
-    }
-
-    .eat-button.change {
-      background-image: linear-gradient(90deg, #4996ee, #63cdf5);
-      box-shadow: 0 2px 6px #60c4f6;
-    }
-
-    .self-food {
-      text-align: center;
-    }
-
-    #foodsList {
-      width: 95%;
-      min-height: 300px;
-      font-size: 1rem;
-      font-family: system-ui;
-    }
-
-    .foods-button {
-      display: inline-block;
-      font-size: 1.2em;
-      height: 2em;
-      width: 4.7em;
-      margin-top: 1em;
-      border-radius: 1em;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      text-align: center;
-      background-image: linear-gradient(135deg, #ec7e31, #f2b542);
-      box-shadow: 0 2px 6px #f2b241;
-    }
-
-    .custom-button {
-      width: 30px;
-      padding: 5px;
-      margin-left: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .hideDiv {
-      display: none;
-    }
-
-    h1 {
-      margin-top: 20%;
-    }
-
-    @media(prefers-color-scheme:light) {
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <title>今天吃什么</title>
+    <script src="js/jquery.min.js"></script>
+    <style>
       html {
-        color: #2c3e50;
+        font-size: 20px;
       }
-    }
 
-    @media(prefers-color-scheme:dark) {
-      html {
-        background-color: #1c1c1e;
-        color: #adbac7;
+      .app-eat {
+        text-align: center;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div class="app-eat">
-    <div class="custom-button"><img src="./imgs/setting.svg" width="30px" height="30px" /></div>
-    <h1>今天吃什么</h1>
-    <div class="start eat-button d-flex-center"><span id="button-text">开始</span></div>
-  </div>
-  <div class="self-food hideDiv">
-    <textarea id="foodsList"></textarea>
-    <button onclick="changeFood()" class="foods-button">确定</button>
-  </div>
-</body>
-<script>
-  var timer = 1
-  var foods = utools.dbStorage.getItem("foods");
-  if (foods == undefined) {
-    foods = "猪脚饭 汉堡薯条 麻辣烫 烧腊饭 黄焖鸡米饭 煲仔饭 酸辣粉 肠粉 沙县小吃 热干面 重庆小面 兰州拉面 凉皮 生煎 锅贴 炒饭 冒菜 鸭血粉丝汤 胡辣汤 砂锅粥 螺蛳粉 水饺 茶餐厅 馄饨抄手 披萨 桂林米粉 川菜 湘菜 粤菜 焗饭 泡面 麻辣香锅 沙拉轻食 馄饨 拉面 烩面 热干面 刀削面 油泼面 炸酱面 炒面 重庆小面 米线 酸辣粉 土豆粉 螺狮粉 凉皮儿 麻辣烫 肉夹馍 羊肉汤 炒饭 盖浇饭 卤肉饭 烤肉饭 黄焖鸡米饭 驴肉火烧 川菜 麻辣香锅 火锅 酸菜鱼 烤串 披萨 烤鸭 汉堡 炸鸡 蟹黄包 煎饼果子 生煎 炒年糕";
-  }
-  $(".eat-button").click(function () {
-    if ($(".eat-button").hasClass("stop")) {
-      $("#button-text").html("换一个")
-      $(".eat-button").removeClass("stop").addClass("change")
-      clearInterval(timer)
-    } else {
-      selectFood()
-    }
-  })
-  function selectFood() {
-    $("#button-text").html("停下")
-    $(".eat-button").removeClass("start").removeClass("change").addClass("stop")
-    var foodsList = foods.split(' ');
-    timer = setInterval(function () {
-      var index = Math.round(Math.random() * foodsList.length);
-      $("h1").html(foodsList[index]);
-    }, 20)
-    setTimeout(function () {
-      clearInterval(timer)
-      $(".eat-button").removeClass("stop").addClass("change")
-      $("#button-text").html("换一个")
-    }, 5000)
-  }
-  $(".custom-button").click(function () {
-    $(".app-eat").addClass("hideDiv")
-    $(".self-food").removeClass("hideDiv")
-    $("#foodsList").val(foods)
-  })
-  function changeFood() {
-    foods = $("#foodsList").val()
-    utools.dbStorage.setItem('foods', foods)
-    $(".app-eat").removeClass("hideDiv")
-    $(".self-food").addClass("hideDiv")
-  }
-</script>
+      .app-eat::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+        opacity: 0.2;
+        background-image: url(./imgs/bg.svg);
+        background-size: cover;
+        background-position: center;
+      }
 
+      .eat-button {
+        display: inline-block;
+        height: 1.5em;
+        width: 5em;
+        margin-top: 1em;
+        border-radius: 1em;
+        color: #fff;
+        cursor: pointer;
+        text-align: center;
+        padding: 6px;
+      }
+
+      .eat-button.start {
+        background-image: linear-gradient(135deg, #ec7e31, #f2b542);
+        box-shadow: 0 2px 6px #f2b241;
+      }
+
+      .eat-button.stop {
+        background-image: linear-gradient(90deg, #ea4b67, #ed908b);
+        box-shadow: 0 2px 6px #f08984;
+      }
+
+      .eat-button.change {
+        background-image: linear-gradient(90deg, #4996ee, #63cdf5);
+        box-shadow: 0 2px 6px #60c4f6;
+      }
+
+      .self-food {
+        text-align: center;
+      }
+
+      #foodsList {
+        width: 95%;
+        min-height: 300px;
+        font-size: 1rem;
+        font-family: system-ui;
+      }
+
+      .foods-button {
+        display: inline-block;
+        font-size: 1.2em;
+        height: 2em;
+        width: 4.7em;
+        margin-top: 1em;
+        border-radius: 1em;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        text-align: center;
+        background-image: linear-gradient(135deg, #ec7e31, #f2b542);
+        box-shadow: 0 2px 6px #f2b241;
+      }
+
+      .button-reset {
+        background-image: linear-gradient(90deg, #ea4b67, #ed908b);
+        box-shadow: 0 2px 6px #f08984;
+      }
+
+      .custom-button {
+        width: 30px;
+        padding: 5px;
+        margin-left: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .hideDiv {
+        display: none;
+      }
+
+      h1 {
+        margin-top: 20%;
+      }
+
+      @media (prefers-color-scheme: light) {
+        html {
+          color: #2c3e50;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html {
+          background-color: #1c1c1e;
+          color: #adbac7;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app-eat">
+      <div class="custom-button">
+        <img
+          src="./imgs/setting.svg"
+          width="30px"
+          height="30px" />
+      </div>
+      <h1>今天吃什么</h1>
+      <div class="start eat-button d-flex-center">
+        <span id="button-text">开始</span>
+      </div>
+    </div>
+    <div class="self-food hideDiv">
+      <textarea id="foodsList"></textarea>
+      <button
+        onclick="changeFood()"
+        class="foods-button">
+        确定
+      </button>
+      <button
+        onclick="resetFood()"
+        class="foods-button button-reset">
+        重置
+      </button>
+    </div>
+  </body>
+  <script>
+    var timer = 1;
+    var foods = utools.dbStorage.getItem('foods');
+    if (foods == undefined) {
+    }
+    $('.eat-button').click(function () {
+      if ($('.eat-button').hasClass('stop')) {
+        $('#button-text').html('换一个');
+        $('.eat-button').removeClass('stop').addClass('change');
+        clearInterval(timer);
+      } else {
+        selectFood();
+      }
+    });
+    function selectFood() {
+      $('#button-text').html('停下');
+      $('.eat-button')
+        .removeClass('start')
+        .removeClass('change')
+        .addClass('stop');
+      var foodsList = foods.split(' ');
+      timer = setInterval(function () {
+        var index = Math.round(Math.random() * foodsList.length);
+        $('h1').html(foodsList[index]);
+      }, 20);
+      setTimeout(function () {
+        clearInterval(timer);
+        $('.eat-button').removeClass('stop').addClass('change');
+        $('#button-text').html('换一个');
+      }, 5000);
+    }
+    $('.custom-button').click(function () {
+      $('.app-eat').addClass('hideDiv');
+      $('.self-food').removeClass('hideDiv');
+      $('#foodsList').val(foods);
+    });
+    function changeFood() {
+      foods = $('#foodsList').val();
+      utools.dbStorage.setItem('foods', foods);
+      $('.app-eat').removeClass('hideDiv');
+      $('.self-food').addClass('hideDiv');
+    }
+    function resetFood() {
+      foods =
+        '猪脚饭 汉堡薯条 麻辣烫 烧腊饭 黄焖鸡米饭 煲仔饭 酸辣粉 肠粉 沙县小吃 热干面 重庆小面 兰州拉面 凉皮 生煎 锅贴 炒饭 冒菜 鸭血粉丝汤 胡辣汤 砂锅粥 螺蛳粉 水饺 茶餐厅 馄饨抄手 披萨 桂林米粉 川菜 湘菜 粤菜 焗饭 泡面 麻辣香锅 沙拉轻食 馄饨 拉面 烩面 热干面 刀削面 油泼面 炸酱面 炒面 重庆小面 米线 酸辣粉 土豆粉 凉皮儿 麻辣烫 肉夹馍 羊肉汤 炒饭 盖浇饭 卤肉饭 烤肉饭 黄焖鸡米饭 驴肉火烧 川菜 麻辣香锅 火锅 酸菜鱼 烤串 披萨 烤鸭 汉堡 炸鸡 蟹黄包 煎饼果子 生煎 炒年糕';
+      $('#foodsList').val(foods);
+      utools.dbStorage.setItem('foods', foods);
+    }
+  </script>
 </html>
